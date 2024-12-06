@@ -127,7 +127,7 @@
       loop 
       playsinline 
       class="absolute top-0 left-0 w-full h-full object-cover z-0">
-      <source src="terre2.mp4" type="video/mp4">
+      <source src="vid/terre2.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   
@@ -187,15 +187,15 @@
         if (percentageCO2 > 80) {
           message += " Oh no! The CO₂ level is dangerously high! 😱";
           emoji = "🔥";
-          gifSrc = "bad.gif"; // GIF of fire
+          gifSrc = "img/bad.gif"; // GIF of fire
         } else if (percentageCO2 > 50) {
           message += " The CO₂ level is quite high! 🌱 Time to plant some trees!";
           emoji = "🌿";
-          gifSrc = "mid.gif"; // Tree-growing GIF
+          gifSrc = "img/mid.gif"; // Tree-growing GIF
         } else {
           message += " The CO₂ level is acceptable for now. 😊";
           emoji = "💚";
-          gifSrc = "good.gif"; // Happy Earth GIF
+          gifSrc = "img/good.gif"; // Happy Earth GIF
         }
 
         showModal(message, emoji, gifSrc); // Show modal with result, emoji, and GIF
