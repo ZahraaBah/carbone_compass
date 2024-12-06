@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CO₂ Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom fade-in scale animation */
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Bouncing effect for the text */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Flashing effect for the message */
+    @keyframes flash {
+      0% { color: #ff6347; }
+      50% { color: #32cd32; }
+      100% { color: #ff6347; }
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;  /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .modal.show {
+      display: flex;
+      opacity: 1;
+      animation: fadeInScale 0.5s ease-out forwards;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .modal-content h2 {
+      font-size: 2rem;
+      font-weight: bold;
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #ff6347; /* Change color on hover */
+}
+
+    .emoji {
+      font-size: 0rem;
+    }
+
+    
+    .modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh; /* Limit the height of the modal */
+  
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative; /* Position relative to contain the close button */
+}
+
+
+    .gif {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+
+
+  </style>
+</head>
+<body class="bg-green-50 text-gray-800 font-sans h-screen flex items-center justify-center">
+  <div class="relative w-full h-full">
+    <!-- Video Background -->
+    <video 
+      autoplay 
+      muted 
+      loop 
+      playsinline 
+      class="absolute top-0 left-0 w-full h-full object-cover z-0">
+      <source src="terre2.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  
+    <!-- Content Overlay -->
+    <div class="relative z-10 flex flex-col items-center justify-center text-center text-white space-y-6 h-full px-4">
+        <h1 class="text-5xl font-extrabold text-green-400 drop-shadow-lg tracking-wide" style="font-family: 'Roboto', sans-serif;">Carbone Compass</h1>
+
+      <p class="text-lg text-blue-200 drop-shadow-lg italic">Paste a link to analyze CO₂ levels in a specific area.</p>
+      <div class="space-y-4 w-full max-w-md">
+        <input 
+          type="text" 
+          id="linkInput"
+          placeholder="Enter the link here" 
+          class="w-full px-4 py-2 border-2 border-blue-100 bg-gray-200 text-gray-800 placeholder-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 transition-shadow shadow-md"
+        />
+        <button 
+          onclick="searchCO2()" 
+          class="w-full bg-gradient-to-r from-green-600 via-blue-600 to-teal-600 text-white px-6 py-2 rounded-lg shadow-lg hover:from-green-700 hover:via-blue-700 hover:to-teal-700 focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105 font-semibold">
+          Search CO₂ Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button onclick="closeModal()" class="close-btn">&times;</button>
+      <h2 class="text-2xl font-bold text-gray-800">CO₂ Level Result</h2>
+      <p id="modalContent" class="text-lg text-gray-700 mt-4"></p>
+      <div id="modalEmoji" class="emoji"></div>
+      <img id="modalGif" class="gif" src="" alt="">
+    </div>
+  </div>
+  
+
+  <script>
+    function searchCO2() {
+      const linkInput = document.getElementById('linkInput');
+      const link = linkInput.value.trim();
+
+      // Only show modal if the input is not empty
+      if (link === "") {
+        // Show modal with error message if link is empty
+        showModal("Please paste a valid link! 😕");
+      } else {
+        // Simulate the search process
+        const mockCO2Level = Math.floor(Math.random() * 600);  // Simulate a random CO₂ level between 0-600 ppm
+        const maxCO2Level = 600;
+        const percentageCO2 = (mockCO2Level / maxCO2Level) * 100;  // CO₂ as a percentage of the max level
+
+        // Display result and sarcasm if CO₂ level is high
+        let message = `Mock data: CO₂ level in the area is approximately ${mockCO2Level} ppm (${percentageCO2.toFixed(2)}%).`;
+        let emoji = "🌍";
+        let gifSrc = "";
+
+        if (percentageCO2 > 80) {
+          message += " Oh no! The CO₂ level is dangerously high! 😱";
+          emoji = "🔥";
+          gifSrc = "bad.gif"; // GIF of fire
+        } else if (percentageCO2 > 50) {
+          message += " The CO₂ level is quite high! 🌱 Time to plant some trees!";
+          emoji = "🌿";
+          gifSrc = "mid.gif"; // Tree-growing GIF
+        } else {
+          message += " The CO₂ level is acceptable for now. 😊";
+          emoji = "💚";
+          gifSrc = "good.gif"; // Happy Earth GIF
+        }
+
+        showModal(message, emoji, gifSrc); // Show modal with result, emoji, and GIF
+      }
+    }
+
+    function showModal(content, emoji, gifSrc) {
+      const modal = document.getElementById('modal');
+      const modalContent = document.getElementById('modalContent');
+      const modalEmoji = document.getElementById('modalEmoji');
+      const modalGif = document.getElementById('modalGif');
+
+      modalContent.textContent = content;
+      modalEmoji.textContent = emoji;
+      modalGif.src = gifSrc;
+      modal.classList.add('show');  // Add 'show' class to trigger the fade-in effect
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.remove('show');  // Remove 'show' class to hide the modal
+    }
+  </script>
+</body>
+</html>
